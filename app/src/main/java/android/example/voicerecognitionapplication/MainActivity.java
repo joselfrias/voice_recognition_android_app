@@ -6,30 +6,40 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class StartVoiceRecognition extends Activity {
+public class MainActivity extends Activity {
 
-    private final int REQUEST_SPEECH_RECOGNIZER = 3000;
-    private TextView textView;
+    private final int REQUEST_SPEECH_RECOGNIZER = 100;
+    Button startSpeech;
+    TextView textView;
     private String speech = "";
-    private String searchQuestion="What do you want to search for?";
+    private String searchQuestion="You can speak now";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textView = (TextView)findViewById(R.id.textView1);
-        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
-            textView.setText("Voice recognition is not available on your device");
-        } else {
-            startSpeechRecognizer();
-        }
+        startSpeech=findViewById(R.id.startSpeech);
+        textView=findViewById(R.id.textView);
+        startSpeech.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
+                    textView.setText("Voice recognition is not available on your device");
+                } else {
+                    startSpeechDialog();
+                }
+            }
+        });
+
     }
 
-    private void startSpeechRecognizer() {
+    private void startSpeechDialog() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, searchQuestion);
@@ -50,10 +60,4 @@ public class StartVoiceRecognition extends Activity {
         }
     }
 
-    /*
-                if (mAnswer.toUpperCase().indexOf("AMAZON") > -1)
-                    mTextView.setText("\n\nQuestion: " + mQuestion + "\n\nYour answer is '" + mAnswer + "' and it is correct!");
-                else
-                    mTextView.setText("\n\nQuestion: " + mQuestion + "\n\nYour answer is '" + mAnswer + "' and it is incorrect!");
-                 */
 }
